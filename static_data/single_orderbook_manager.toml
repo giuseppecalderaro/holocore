@@ -1,0 +1,29 @@
+name = "HoloProcessor"
+version = 100
+log_level = "debug"
+workers = 1
+stack_size = 4
+ctrl_host = "0.0.0.0"
+ctrl_port = 8000
+discovery_service = "127.0.0.1"
+gateway = "MainGateway"
+
+[[sources]]
+type = "BinanceSource"
+name = "BinanceSource"
+queue_size = 32
+downstreams = [ "OrderbookManager" ]
+base_url = "wss://stream.binance.com:9443/stream?streams="
+snapshot_url = "https://api.binance.com/api/v3/depth?symbol="
+symbols = [ "dogeusdt@depth" ]
+
+[[pus]]
+type = "OrderbookManagerPU"
+name = "OrderbookManager"
+queue_size = 32
+downstreams = [ "FileSink" ]
+
+[[sinks]]
+type = "FileSink"
+name = "FileSink"
+filename = "/Users/giuseppe/Projects/workbench/binance_output"

@@ -1,0 +1,71 @@
+name = "HoloProcessor"
+version = 100
+log_level = "debug"
+workers = 1
+stack_size = 4
+ctrl_host = "0.0.0.0"
+ctrl_port = 8000
+discovery_service = "127.0.0.1"
+gateway = "MainGateway"
+
+# [[sources]]
+# type = "MockSource"
+# name = "MockSource"
+# queue_size = 32
+# downstreams = [ "BinanceSpotSink" ]
+# sleep_time = 3000
+
+# [[sources]]
+# type = "BinanceSpotSource"
+# name = "BinanceSpotSource"
+# queue_size = 32
+# downstreams = [ "OrderbookManager" ]
+# wakeup_interval = 3000
+# base_url = "wss://stream.binance.com:9443/stream?streams="
+# snapshot_url = "https://api.binance.com/api/v3/depth?symbol="
+# symbols = [ "btcusdt@depth" ]
+
+[[sources]]
+type = "FileSource"
+name = "FileSource"
+queue_size = 32
+downstreams = [ "TrendFollowing" ]
+filename = "/Users/giuseppe/Projects/ThePlatform/CollectedData/binance_books_1_20220925T215129"
+
+# [[pus]]
+# type = "OrderbookManagerPU"
+# name = "OrderbookManager"
+# queue_size = 32
+# downstreams = [ "MockSink" ]
+# realtime = true
+
+[[pus]]
+type = "StrategyPU"
+name = "TrendFollowing"
+queue_size = 32
+downstreams = [ "MockSink" ]
+realtime = false
+algorithm = "TrendFollowing"
+
+[[sinks]]
+type = "MockSink"
+name = "MockSink"
+
+# [[sinks]]
+# type = "FileSink"
+# name = "FileSink"
+# filename = "/Users/giuseppe/Projects/ThePlatform/CollectedData/output"
+
+# [[sinks]]
+# type = "FileSink"
+# name = "FileSinkReplica"
+# filename = "/Users/giuseppe/Projects/workbench/binance_replica"
+
+# [[sinks]]
+# type = "BinanceSpotSink"
+# name = "BinanceSpotSink"
+# base_url = "https://testnet.binance.vision"
+# api_key = "R6ubw3D6Sh9ANaoAIPV7UTQW9L1QOoeeC4RA1WSNyixmaBWy2TNUQqCGXnlru6zO"
+# secret_key = "jL1DVreyVUIQuZAqZGWEeICmYeSioq4sLEskt29msjwcawEU4LvszHHUwGoyltit"
+# user_agent = "cobiex"
+# content_type = "application/x-www-form-urlencoded"

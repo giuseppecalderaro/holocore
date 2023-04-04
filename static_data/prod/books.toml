@@ -1,0 +1,42 @@
+name = "BooksListener1"
+version = 100
+log_level = "info"
+workers = 4
+stack_size = 4
+ctrl_host = "0.0.0.0"
+ctrl_port = 8000
+discovery_service = "cockpit_redis_dev"
+gateway = "MainGateway"
+
+[[sources]]
+type = "BinanceSpotSource"
+name = "BinanceSpotSource"
+queue_size = 32
+downstreams = [ "OrderbookManager" ]
+wakeup_interval = 3000
+base_url = "wss://stream.binance.com:9443/stream?streams="
+snapshot_url = "https://api.binance.com/api/v3/depth?symbol="
+symbols = [ "ethbtc@depth/",
+            "dogeusdt@depth/",
+            "maticusdt@depth/",
+            "apeusdt@depth/",
+            "hntusdt@depth/",
+            "atomusdt@depth/",
+            "etcusdt@depth/",
+            "ethusdt@depth/",
+            "btcusdt@depth/",
+            "btceur@depth/",
+            "btcgbp@depth/",
+            "btcbrl@depth" ]
+
+[[pus]]
+type = "OrderbookManagerPU"
+name = "OrderbookManager"
+queue_size = 32
+downstreams = [ "FileSink" ]
+realtime = true
+
+[[sinks]]
+type = "FileSink"
+name = "FileSink"
+filename = "/data/binance_books_1"
